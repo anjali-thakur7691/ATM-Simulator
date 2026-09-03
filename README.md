@@ -95,5 +95,6 @@ Pick any card from the interactive right-side Wallet Panel:
 ## 🚀 Quick Start Guide
 
 1. Download or clone this repository:
-   ```bash
-   git clone https://github.com/your-username/atm-simulator.git
+## Live link
+
+**https://atm-simulator-machine-project.netlify.app/**
