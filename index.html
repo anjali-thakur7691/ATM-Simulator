@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexBank CyberATM - Next-Gen Interactive Simulator</title>
+    <meta name="description" content="Next-generation interactive ATM Simulator with Voice Assistant, Multi-Language support, Fund Transfers, Bill Denominations, and Printable Receipts.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="cyber">
+    <div class="app-container">
+        <!-- Top Navigation Header & ATM Settings Controls -->
+        <header class="top-header">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">NEXBANK <span>ULTRA ATM v3.0</span></span>
+            </div>
+            <div class="header-controls">
+                <!-- Theme Selector -->
+                <div class="control-group">
+                    <label for="theme-select">Theme:</label>
+                    <select id="theme-select" class="custom-select">
+                        <option value="cyber" selected>🌌 Cyber Neon</option>
+                        <option value="gold">🏆 Gold VIP</option>
+                        <option value="steel">🛡️ Classic Steel</option>
+                    </select>
+                </div>
+                <!-- Language Selector -->
+                <div class="control-group">
+                    <label for="lang-select">Language:</label>
+                    <select id="lang-select" class="custom-select">
+                        <option value="en" selected>🇬🇧 English</option>
+                        <option value="hi">🇮🇳 हिन्दी (Hindi)</option>
+                        <option value="hinglish">🔤 Hinglish</option>
+                    </select>
+                </div>
+                <!-- Currency Selector -->
+                <div class="control-group">
+                    <label for="currency-select">Currency:</label>
+                    <select id="currency-select" class="custom-select">
+                        <option value="₹">₹ INR (₹)</option>
+                        <option value="$" selected>$ USD ($)</option>
+                        <option value="€">€ EUR (€)</option>
+                    </select>
+                </div>
+                <!-- Voice Assistant Toggle -->
+                <div class="control-group">
+                    <button id="voice-toggle" class="btn-toggle active" title="Toggle Voice Assistant">
+                        <span class="voice-icon">🗣️</span> Voice ON
+                    </button>
+                </div>
+                <!-- Audio FX Toggle -->
+                <div class="control-group">
+                    <button id="sound-toggle" class="btn-toggle active" title="Toggle Sound Effects">
+                        <span class="sound-icon">🔊</span> Beep ON
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main ATM Casing Shell -->
+        <main class="atm-casing">
+            <!-- ATM Branding Header -->
+            <div class="atm-top-bar">
+                <div class="bank-brand">
+                    <span class="brand-badge">24/7 ULTRA EXPRESS</span>
+                    <span class="brand-title">NEXUS FINANCIAL ATM</span>
+                </div>
+                <div class="status-indicators">
+                    <div class="status-dot active" id="status-online" title="System Online"></div>
+                    <span class="status-label">ONLINE</span>
+                    <div class="status-dot active" id="status-encrypted" title="256-Bit Encrypted"></div>
+                    <span class="status-label">SECURE</span>
+                </div>
+            </div>
+
+            <!-- ATM Main Middle Section (Screen + Side Keys) -->
+            <div class="atm-screen-section">
+                <!-- Left Side Screen Function Keys -->
+                <div class="side-keys side-keys-left">
+                    <button class="screen-key" data-key="L1" id="btn-L1"><span>◄</span></button>
+                    <button class="screen-key" data-key="L2" id="btn-L2"><span>◄</span></button>
+                    <button class="screen-key" data-key="L3" id="btn-L3"><span>◄</span></button>
+                    <button class="screen-key" data-key="L4" id="btn-L4"><span>◄</span></button>
+                </div>
+
+                <!-- Central Glass Screen Display -->
+                <div class="screen-bezel">
+                    <div class="screen-glare"></div>
+                    <div id="atm-screen" class="atm-screen">
+                        <!-- Screen Header -->
+                        <div class="screen-header">
+                            <div class="screen-bank-name">NEXUS BANK</div>
+                            <div class="screen-clock" id="live-clock">12:00:00 PM</div>
+                        </div>
+
+                        <!-- Helper Tip Banner -->
+                        <div class="screen-nav-tip">
+                            <span id="nav-tip-text">💡 <strong>Tip:</strong> Click any screen option directly, or press RED CANCEL button to go <strong>BACK</strong></span>
+                        </div>
+
+                        <!-- Screen Main Dynamic Content Body -->
+                        <div id="screen-body" class="screen-body">
+                            <!-- Views dynamically injected by app.js -->
+                        </div>
+
+                        <!-- Screen Footer Message -->
+                        <div class="screen-footer">
+                            <span id="screen-status-msg">Insert card or select quick option to begin</span>
+                            <span class="encryption-tag">🔒 AES-256</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side Screen Function Keys -->
+                <div class="side-keys side-keys-right">
+                    <button class="screen-key" data-key="R1" id="btn-R1"><span>►</span></button>
+                    <button class="screen-key" data-key="R2" id="btn-R2"><span>►</span></button>
+                    <button class="screen-key" data-key="R3" id="btn-R3"><span>►</span></button>
+                    <button class="screen-key" data-key="R4" id="btn-R4"><span>►</span></button>
+                </div>
+            </div>
+
+            <!-- Hardware Slots Bar: Card Reader & Receipt Slot -->
+            <div class="hardware-slots-row">
+                <!-- Receipt Printer Slot -->
+                <div class="hardware-module receipt-module">
+                    <div class="module-label">RECEIPT PRINTER</div>
+                    <div class="receipt-slot-wrapper">
+                        <div class="receipt-slot"></div>
+                        <div id="receipt-paper" class="receipt-paper">
+                            <div class="receipt-header">
+                                <h3>NEXUS BANK ATM</h3>
+                                <p>Transaction Record</p>
+                                <p id="rec-date">2026-09-03 20:50</p>
+                            </div>
+                            <div class="receipt-divider">------------------------</div>
+                            <div id="rec-details" class="rec-details">
+                                <!-- Receipt rows dynamically injected -->
+                            </div>
+                            <div class="receipt-divider">------------------------</div>
+                            <div class="receipt-footer">
+                                <p>Thank you for banking with us!</p>
+                                <p>Support: 1800-NEXUS-ATM</p>
+                            </div>
+                            <div class="receipt-actions">
+                                <button id="print-pdf-btn" class="rec-action-btn btn-print">🖨️ Print / Save</button>
+                                <button id="close-receipt-btn" class="rec-action-btn btn-close">Collect ✖</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Reader Slot -->
+                <div class="hardware-module card-module">
+                    <div class="module-label">CARD READER</div>
+                    <div id="card-slot-container" class="card-slot-container">
+                        <div class="card-slot-light" id="card-slot-light"></div>
+                        <div class="card-slot-opening"></div>
+                        <!-- Inserted Card Animation Element -->
+                        <div id="inserted-card-preview" class="inserted-card-preview">
+                            <span class="chip"></span>
+                            <span class="card-num-mini">•••• 8821</span>
+                        </div>
+                    </div>
+                    <button id="insert-card-action-btn" class="btn-insert-card">
+                        <span>📥 Insert Card</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Lower Mechanical Section: PIN Keypad & Cash Dispenser -->
+            <div class="lower-hardware-row">
+                <!-- Metallic Numeric Keypad -->
+                <div class="keypad-container">
+                    <div class="keypad-label">SECURE PIN KEYPAD</div>
+                    <div class="numeric-keypad">
+                        <button class="keypad-btn num-btn" data-val="1">1</button>
+                        <button class="keypad-btn num-btn" data-val="2">2 <small>ABC</small></button>
+                        <button class="keypad-btn num-btn" data-val="3">3 <small>DEF</small></button>
+                        <button class="keypad-btn action-btn btn-cancel" data-action="cancel">CANCEL</button>
+
+                        <button class="keypad-btn num-btn" data-val="4">4 <small>GHI</small></button>
+                        <button class="keypad-btn num-btn" data-val="5">5 <small>JKL</small></button>
+                        <button class="keypad-btn num-btn" data-val="6">6 <small>MNO</small></button>
+                        <button class="keypad-btn action-btn btn-clear" data-action="clear">CLEAR</button>
+
+                        <button class="keypad-btn num-btn" data-val="7">7 <small>PQRS</small></button>
+                        <button class="keypad-btn num-btn" data-val="8">8 <small>TUV</small></button>
+                        <button class="keypad-btn num-btn" data-val="9">9 <small>WXYZ</small></button>
+                        <button class="keypad-btn action-btn btn-enter" data-action="enter">ENTER</button>
+
+                        <button class="keypad-btn num-btn btn-empty" disabled></button>
+                        <button class="keypad-btn num-btn" data-val="0">0</button>
+                        <button class="keypad-btn num-btn btn-empty" disabled></button>
+                        <button class="keypad-btn action-btn btn-backspace" data-action="backspace">⌫ BACK</button>
+                    </div>
+                </div>
+
+                <!-- Cash Dispenser Shutter Slot -->
+                <div class="cash-dispenser-container">
+                    <div class="dispenser-label">CASH DISPENSER</div>
+                    <div class="dispenser-shutter-box">
+                        <div class="shutter-door shutter-top" id="shutter-top"></div>
+                        <div class="shutter-opening-area">
+                            <!-- Ejected Cash Bills Stack -->
+                            <div id="cash-tray" class="cash-tray">
+                                <!-- Dynamic Bills generated on withdrawal -->
+                            </div>
+                        </div>
+                        <div class="shutter-door shutter-bottom" id="shutter-bottom"></div>
+                    </div>
+                    <div class="dispenser-status" id="dispenser-status-text">DISPENSER READY</div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Side Panel / Interactive Card Wallet Drawer -->
+        <aside class="sidebar-wallet" id="sidebar-wallet">
+            <div class="wallet-header">
+                <h3>💳 Active User Cards</h3>
+                <p>Click any card to select for insertion</p>
+            </div>
+            <div id="cards-list" class="cards-list">
+                <!-- Debit Cards rendered by app.js -->
+            </div>
+            <div class="account-quick-info">
+                <h4>Card Details & Demo PINs</h4>
+                <div id="card-debug-info" class="card-debug-info">
+                    <!-- Loaded active card details -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modal for Custom Cash Deposit Feeder -->
+    <div id="deposit-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2>💵 Deposit Cash Feeder</h2>
+            <p>Select notes to insert into the ATM deposit slot:</p>
+            
+            <div class="bill-selector-grid">
+                <button class="bill-btn" data-denom="10">+ <span class="curr-sym">$</span>10 Bill</button>
+                <button class="bill-btn" data-denom="20">+ <span class="curr-sym">$</span>20 Bill</button>
+                <button class="bill-btn" data-denom="50">+ <span class="curr-sym">$</span>50 Bill</button>
+                <button class="bill-btn" data-denom="100">+ <span class="curr-sym">$</span>100 Bill</button>
+                <button class="bill-btn" data-denom="500">+ <span class="curr-sym">$</span>500 Bill</button>
+            </div>
+
+            <div class="deposit-summary">
+                <span>Total Selected Deposit:</span>
+                <strong id="deposit-total-val"><span class="curr-sym">$</span>0</strong>
+            </div>
+
+            <div class="modal-actions">
+                <button id="cancel-deposit-btn" class="btn-modal-secondary">Cancel</button>
+                <button id="confirm-deposit-btn" class="btn-modal-primary">Insert Bills & Deposit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Fund Transfer to Another Account -->
+    <div id="transfer-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2>💸 Beneficiary Fund Transfer</h2>
+            <p>Send money to another Nexus Bank account holder:</p>
+            
+            <div class="input-form-group">
+                <label>Beneficiary Account Number (10 digits):</label>
+                <input type="text" id="transfer-acc-input" class="modal-input" placeholder="e.g. 9876543210" maxlength="10">
+            </div>
+
+            <div class="input-form-group" style="margin-top: 12px;">
+                <label>Transfer Amount (<span class="curr-sym">$</span>):</label>
+                <input type="number" id="transfer-amt-input" class="modal-input" placeholder="e.g. 250" min="1">
+            </div>
+
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button id="cancel-transfer-btn" class="btn-modal-secondary">Cancel</button>
+                <button id="confirm-transfer-btn" class="btn-modal-primary">Transfer Funds Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Mobile Recharge -->
+    <div id="recharge-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <h2>📱 Mobile & DTH Recharge</h2>
+            <p>Recharge your mobile number directly from ATM balance:</p>
+            
+            <div class="input-form-group">
+                <label>Mobile Number (10 digits):</label>
+                <input type="text" id="recharge-phone-input" class="modal-input" placeholder="e.g. 9812345678" maxlength="10">
+            </div>
+
+            <div class="input-form-group" style="margin-top: 12px;">
+                <label>Select Recharge Pack:</label>
+                <select id="recharge-plan-select" class="custom-select" style="width: 100%; padding: 10px;">
+                    <option value="15">$15 - 1 GB/Day (28 Days)</option>
+                    <option value="29">$29 - 2 GB/Day + Unlimited Calls (28 Days)</option>
+                    <option value="49">$49 - 3 GB/Day + Hotstar VIP (56 Days)</option>
+                    <option value="99">$99 - Unlimited Annual Pack (365 Days)</option>
+                </select>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button id="cancel-recharge-btn" class="btn-modal-secondary">Cancel</button>
+                <button id="confirm-recharge-btn" class="btn-modal-primary">Pay & Recharge</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
